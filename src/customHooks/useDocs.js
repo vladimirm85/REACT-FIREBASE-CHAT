@@ -10,7 +10,7 @@ const useDocs = (path) => {
                 id: doc.id
             });
         });
-    }, []);
+    }, [path]);
 
     return doc;
 };

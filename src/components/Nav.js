@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from "react-router-dom"; 
 import { firebase } from '../firebase';
 import { useCollection } from '../customHooks/useCollection';
 
@@ -28,11 +29,9 @@ const Nav = ({user}) => {
             </div>
             <nav className="ChannelNav">
                 {useCollection('channels').map(channel =>
-                    <a key={`${channel.id}_channel`}
-                       href={`channel/${channel.id}`}
-                    >
-                        # {channel.id}
-                    </a>
+                    <NavLink key={channel.id} to={`/channels/${channel.id}`}>
+                        #{channel.id}
+                    </NavLink>
                 )}
             </nav>
         </div>

@@ -2,8 +2,8 @@ import React from 'react';
 import { useCollection } from '../customHooks/useCollection';
 import { useDocs } from '../customHooks/useDocs';
 
-const Messages = () => {
-    const messages = useCollection('channels/general/messages', 'created');
+const Messages = ({channelId}) => {
+    const messages = useCollection(`channels/${channelId}/messages`, 'created');
     return (
         <div className="Messages">
             <div className="EndOfMessages">That's every message!</div>

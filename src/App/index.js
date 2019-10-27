@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import {
+    BrowserRouter as Router,
+    Route,
+    Switch,
+    Redirect
+  } from "react-router-dom"; 
 import Nav from '../components/Nav';
 import Channel from '../components/Channel';
 import Login from '../components/Login';
@@ -10,8 +16,16 @@ const App = () => {
     return (
         user
         ?<div className="App">
-            <Nav user={user} />
-            <Channel user={user} />
+            <Router>
+                <Nav user={user} />
+                <Switch>
+                    <Route
+                        exact
+                        path="/channels/:id"
+                        component={props => <Channel user={user} match={props.match}/>} />
+                    <Redirect exact from="/" to="/channels/general"/>
+                </Switch>
+            </Router>
         </div>
         :<Login />
     );
