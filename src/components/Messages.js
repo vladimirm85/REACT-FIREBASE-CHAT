@@ -1,5 +1,6 @@
 import React from 'react';
-import { useCollection } from './useCollection.js';
+import { useCollection } from '../customHooks/useCollection';
+import { useDocs } from '../customHooks/useDocs';
 
 const Messages = () => {
     const messages = useCollection('channels/general/messages', 'created');
@@ -8,35 +9,53 @@ const Messages = () => {
             <div className="EndOfMessages">That's every message!</div>
             {messages.map((message, index) => {
                 const showDay = false;
-                const previousMessage = index ? message[index-1] : null;
-                const showAvatar = !previousMessage || 
-                <div key={message.id}>
-                    <div className="Day">
-                        <div className="DayLine" />
-                        <div className="DayText">12/6/2018</div>
-                        <div className="DayLine" />
-                    </div>
-                    
-                        
-                        <div className="Message with-avatar">
-                            <div className="Avatar" />
-                            <div className="Author">
-                                <div>
-                                    <span className="UserName">Ryan Florence </span>
-                                    <span className="TimeStamp">{message.created.toString()}</span>
-                                </div>
-                                <div className="MessageContent">{message.text}</div>
-                            </div>
-                        </div>
-                        <div key={message.id} className="Message no-avatar">
+                const previousMessage = index ? messages[index-1] : null;
+                const showAvatar = !previousMessage || message.user.id !== previousMessage.user.id;
+                return (
+                    <div key={message.id}>
+                        {showAvatar
+                        ?<FirstUserMessage message={message} showDay={showDay}/>
+                        :<div key={message.id} className="Message no-avatar">
                             <div className="MessageContent">{message.text}</div>
-                        </div>
-                    
-                </div>
+                        </div>}
+                    </div>
+                );
             })}
         </div>
-    )
-}
-    ;
+    );
+};
+
+const FirstUserMessage = ({ message, showDay }) => {
+    const author = useDocs(message.user.path)
+    return (
+        <div>
+            {showDay
+            ? <div className="Day">
+                <div className="DayLine" />
+                <div className="DayText">12/6/2018</div>
+                <div className="DayLine" />
+            </div>
+            : null}
+            <div className="Message with-avatar">
+                <div
+                    className="Avatar"
+                    style={{
+                        backgroundImage: author
+                            ? `url("${author.photoUrl}")`
+                            : ""
+                    }}
+                />
+                <div className="Author">
+                    <div>
+                        <span className="UserName">{author && author.displayName}</span>
+                        {" "}
+                        <span className="TimeStamp">{message.created.toString()}</span>
+                    </div>
+                    <div className="MessageContent">{message.text}</div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export default Messages;

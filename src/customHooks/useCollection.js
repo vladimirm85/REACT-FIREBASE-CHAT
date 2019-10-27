@@ -18,7 +18,7 @@ const useCollection = (path, order) => {
             });
             setDocs(docs);
         });
-    }, [path, order]);
+    }, []);
 
     return docs;
 };

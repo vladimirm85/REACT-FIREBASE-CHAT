@@ -1,6 +1,6 @@
 import React from 'react';
 import { firebase } from '../firebase';
-import { useCollection } from './useCollection.js';
+import { useCollection } from '../customHooks/useCollection';
 
 const Nav = ({user}) => {
 
