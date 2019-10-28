@@ -6,9 +6,9 @@ const ChannelInfo = ({channelId}) => {
     return (
         <div className="ChannelInfo">
             <div className="Topic">
-                Topic: <input className="TopicInput" value={channel.topic}/>
+                Topic: <input className="TopicInput" defaultValue={channel && channel.topic}/>
             </div>
-            <div className="ChannelName">#{channel.id}</div>
+            <div className="ChannelName">#{channelId}</div>
         </div>
     );
 };

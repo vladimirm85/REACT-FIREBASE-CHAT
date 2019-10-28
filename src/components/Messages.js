@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import formatDate from 'date-fns/format';
+import isSameDay from 'date-fns/isSameDay'
 import { useCollection } from '../customHooks/useCollection';
 import { useDocs } from '../customHooks/useDocs';
 
 const Messages = ({channelId}) => {
     const messages = useCollection(`channels/${channelId}/messages`, 'created');
+    const scrollerRef = useRef();
+    useChatScrollManager(scrollerRef);
     return (
-        <div className="Messages">
+        <div ref={scrollerRef} className="Messages">
             <div className="EndOfMessages">That's every message!</div>
             {messages.map((message, index) => {
-                const showDay = false;
                 const previousMessage = index ? messages[index-1] : null;
-                const showAvatar = !previousMessage || message.user.id !== previousMessage.user.id;
+                const showDay = shouldShowDay(previousMessage, message);
+                const showAvatar = shouldShowAvatar(previousMessage, message);
                 return (
                     <div key={message.id}>
                         {showAvatar
@@ -32,7 +36,7 @@ const FirstUserMessage = ({ message, showDay }) => {
             {showDay
             ? <div className="Day">
                 <div className="DayLine" />
-                <div className="DayText">12/6/2018</div>
+                <div className="DayText">{formatDate(message.created.seconds * 1000, "dd/MM/yyyy")}</div>
                 <div className="DayLine" />
             </div>
             : null}
@@ -49,13 +53,49 @@ const FirstUserMessage = ({ message, showDay }) => {
                     <div>
                         <span className="UserName">{author && author.displayName}</span>
                         {" "}
-                        <span className="TimeStamp">{message.created.toString()}</span>
+                        <span className="TimeStamp">{formatDate(message.created.seconds * 1000, "H:mm")}</span>
                     </div>
                     <div className="MessageContent">{message.text}</div>
                 </div>
             </div>
         </div>
     );
+};
+
+const shouldShowAvatar = (previousMessage, message) => {
+    const isFirst = !previousMessage;
+    if (isFirst) {
+        return true;
+    };
+
+    const differentUser = message.user.id !== previousMessage.user.id;
+    if (differentUser) {
+        return true;
+    };
+
+    const hasBeenAwhile = message.created.seconds - previousMessage.created.seconds > 60;
+    return hasBeenAwhile;
+};
+
+const shouldShowDay = (previousMessage, message) => {
+    const isFirst = !previousMessage;
+    if (isFirst) {
+        return true;
+    };
+
+    const isNewDay = !isSameDay(
+        message.created.seconds * 1000,
+        previousMessage.created.seconds * 1000
+    );
+
+    return isNewDay;
+};
+
+const useChatScrollManager = ref => {
+    useEffect(() => {
+        const node = ref.current;
+        node.scrollTop = node.scrollHeight;
+    });
 };
 
 export default Messages;
