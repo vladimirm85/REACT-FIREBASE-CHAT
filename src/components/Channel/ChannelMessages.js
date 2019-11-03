@@ -1,15 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import formatDate from 'date-fns/format';
-import isSameDay from 'date-fns/isSameDay'
-import { useCollection } from '../customHooks/useCollection';
-import { useDocs } from '../customHooks/useDocs';
+import isSameDay from 'date-fns/isSameDay';
+import ChatScroller from './ChannelChatScroller';
+import { useCollection } from '../../customHooks/useCollection';
+import { useDocs } from '../../customHooks/useDocs';
 
 const Messages = ({channelId}) => {
     const messages = useCollection(`channels/${channelId}/messages`, 'created');
-    const scrollerRef = useRef();
-    useChatScrollManager(scrollerRef);
     return (
-        <div ref={scrollerRef} className="Messages">
+        <ChatScroller className="Messages">
             <div className="EndOfMessages">That's every message!</div>
             {messages.map((message, index) => {
                 const previousMessage = index ? messages[index-1] : null;
@@ -25,7 +24,7 @@ const Messages = ({channelId}) => {
                     </div>
                 );
             })}
-        </div>
+        </ChatScroller>
     );
 };
 
@@ -89,13 +88,6 @@ const shouldShowDay = (previousMessage, message) => {
     );
 
     return isNewDay;
-};
-
-const useChatScrollManager = ref => {
-    useEffect(() => {
-        const node = ref.current;
-        node.scrollTop = node.scrollHeight;
-    });
 };
 
 export default Messages;

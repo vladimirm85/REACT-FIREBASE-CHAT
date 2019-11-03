@@ -1,5 +1,5 @@
 import React from 'react';
-import { dataBase } from '../firebase'
+import { dataBase } from '../../firebase'
 
 const ChatInputBox = ({ user, channelId }) => {
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from "react-router-dom"; 
-import { firebase } from '../firebase';
-import { useCollection } from '../customHooks/useCollection';
+import { firebase } from '../../firebase';
+import { useCollection } from '../../customHooks/useCollection';
 
 const Nav = ({user}) => {
 

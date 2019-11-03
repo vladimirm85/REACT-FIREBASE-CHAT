@@ -5,7 +5,7 @@ import {
     Switch,
     Redirect
   } from "react-router-dom"; 
-import Nav from '../components/Nav';
+import Nav from '../components/Navigation';
 import Channel from '../components/Channel';
 import Login from '../components/Login';
 import { firebase, dataBase } from '../firebase';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDocs } from '../customHooks/useDocs';
+import { useDocs } from '../../customHooks/useDocs';
 
 const ChannelInfo = ({channelId}) => {
     const channel = useDocs(`channels/${channelId}`);

@@ -1,8 +1,8 @@
 import React from 'react';
-import Members from './Members';
+import Members from './ChannelMembers';
 import ChannelInfo from './ChannelInfo';
-import Messages from './Messages';
-import ChatInputBox from './ChatInputBox';
+import Messages from './ChannelMessages';
+import ChatInputBox from './ChannelChatInputBox';
 
 const Channel = ({user, match}) => 
         <div className="Channel">
