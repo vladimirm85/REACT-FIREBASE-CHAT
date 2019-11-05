@@ -113,7 +113,7 @@ ChannelMessages.propTypes = {
 
 const mapStateToProps = (state, props) => ({
     messages: state.channelsMessages[props.channelId],
-    users: state.users
+    users: state.users.data
 });
 
 export default connect(mapStateToProps)(ChannelMessages);

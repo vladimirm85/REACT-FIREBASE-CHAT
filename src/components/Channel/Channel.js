@@ -21,7 +21,7 @@ const Channel = ({match, users, channels}) => {
     }, [dispatch]);
 
     return (
-        channels.isLoaded
+        channels.isLoaded && users.isLoaded
         ? <div className="Channel">
             <div className="ChannelMain">
                 <ChannelInfo channelId={match.params.id} />
@@ -36,7 +36,7 @@ const Channel = ({match, users, channels}) => {
 
 Channel.propTypes = {
     match: PropTypes.object.isRequired,
-    users: PropTypes.array,
+    users: PropTypes.object,
     channels: PropTypes.object
 };
 
