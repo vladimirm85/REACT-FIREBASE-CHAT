@@ -1,16 +1,24 @@
 import React from 'react';
-import { useDocs } from '../../customHooks/useDocs';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-const ChannelInfo = ({channelId}) => {
-    const channel = useDocs(`channels/${channelId}`);
-    return (
-        <div className="ChannelInfo">
-            <div className="Topic">
-                Topic: <input className="TopicInput" defaultValue={channel && channel.topic}/>
-            </div>
-            <div className="ChannelName">#{channelId}</div>
+const ChannelInfo = ({channel}) => 
+    <div className="ChannelInfo">
+        <div className="Topic">
+            Topic: <input
+                    key={channel.id}
+                    className="TopicInput"
+                    defaultValue={channel.topic}/>
         </div>
-    );
+        <div className="ChannelName">#{channel.id}</div>
+    </div>;
+
+ChannelInfo.propTypes = {
+    channel: PropTypes.object.isRequired
 };
 
-export default ChannelInfo;
+const mapStateToProps = (state, props) => ({
+    channel: state.channels.data.find(channel => channel.id === props.channelId)
+});
+
+export default connect(mapStateToProps)(ChannelInfo);

@@ -1,28 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, connect } from 'react-redux';
 import {
     BrowserRouter as Router,
     Route,
     Switch,
     Redirect
-  } from "react-router-dom"; 
-import Nav from '../components/Navigation';
+} from "react-router-dom"; 
+import PropTypes from 'prop-types';
+import Navigation from '../components/Navigation';
 import Channel from '../components/Channel';
 import Login from '../components/Login';
-import { firebase, dataBase } from '../firebase';
+import { handleGetAuthUser } from '../actions';
 
-const App = () => {
-    const user = useUserAuth();
+const App = ({authUser}) => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(handleGetAuthUser());
+    }, [dispatch]);
 
     return (
-        user
+        authUser.isLoaded
         ?<div className="App">
             <Router>
-                <Nav user={user} />
+                <Navigation authUser={authUser.data} />
                 <Switch>
                     <Route
                         exact
                         path="/channels/:id"
-                        component={props => <Channel user={user} match={props.match}/>} />
+                        component={props =>
+                            <Channel
+                                match={props.match} />} />
                     <Redirect exact from="/" to="/channels/general"/>
                 </Switch>
             </Router>
@@ -31,27 +39,12 @@ const App = () => {
     );
 };
 
-const useUserAuth = () => {
-    const [user, setUser] = useState();
-
-    useEffect(() => {
-        return firebase.auth().onAuthStateChanged(firebaseUser => {
-            if (firebaseUser) {
-                const user = {
-                    displayName: firebaseUser.displayName,
-                    photoUrl: firebaseUser.photoURL,
-                    id: firebaseUser.uid
-                };
-                dataBase
-                    .collection('users')
-                    .doc(user.id)
-                    .set(user, { merge: true });
-                setUser(user);
-            } else setUser(null);
-        });
-    }, []);
-
-    return user;
+App.propTypes = {
+    authUser: PropTypes.object
 };
 
-export default App;
+const mapStateToProps = state => ({
+    authUser: state.authUser
+});
+
+export default connect(mapStateToProps)(App);

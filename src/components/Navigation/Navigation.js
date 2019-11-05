@@ -3,18 +3,18 @@ import { NavLink } from "react-router-dom";
 import { firebase } from '../../firebase';
 import { useCollection } from '../../customHooks/useCollection';
 
-const Nav = ({user}) => {
+const Nav = ({authUser}) => {
 
     return (
         <div className="Nav">
             <div className="User">
                 <img
                     className="UserImage"
-                    alt={user.id}
-                    src={user.photoUrl}
+                    alt={authUser.id}
+                    src={authUser.photoUrl}
                 />
                 <div>
-                    <div>{user.displayName}</div>
+                    <div>{authUser.displayName}</div>
                     <div>
                         <button
                             className="text-button"

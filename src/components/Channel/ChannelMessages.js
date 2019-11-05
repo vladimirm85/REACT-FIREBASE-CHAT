@@ -1,23 +1,27 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import formatDate from 'date-fns/format';
 import isSameDay from 'date-fns/isSameDay';
 import ChatScroller from './ChannelChatScroller';
-import { useCollection } from '../../customHooks/useCollection';
-import { useDocs } from '../../customHooks/useDocs';
 
-const Messages = ({channelId}) => {
-    const messages = useCollection(`channels/${channelId}/messages`, 'created');
+const ChannelMessages = ({messages, users}) => {
     return (
         <ChatScroller className="Messages">
             <div className="EndOfMessages">That's every message!</div>
-            {messages.map((message, index) => {
+            {!messages
+            ? <h1>Loading...</h1>
+            : messages.map((message, index) => {
                 const previousMessage = index ? messages[index-1] : null;
                 const showDay = shouldShowDay(previousMessage, message);
                 const showAvatar = shouldShowAvatar(previousMessage, message);
                 return (
                     <div key={message.id}>
                         {showAvatar
-                        ?<FirstUserMessage message={message} showDay={showDay}/>
+                        ?<FirstUserMessage
+                            message={message}
+                            showDay={showDay}
+                            users={users}/>
                         :<div key={message.id} className="Message no-avatar">
                             <div className="MessageContent">{message.text}</div>
                         </div>}
@@ -28,14 +32,18 @@ const Messages = ({channelId}) => {
     );
 };
 
-const FirstUserMessage = ({ message, showDay }) => {
-    const author = useDocs(message.user.path)
+const FirstUserMessage = ({ message, showDay, users }) => {
+    const userId = message.user.path.slice(6);
+    const author = users.find(user => user.id === userId);
+
     return (
         <div>
             {showDay
             ? <div className="Day">
                 <div className="DayLine" />
-                <div className="DayText">{formatDate(message.created.seconds * 1000, "dd/MM/yyyy")}</div>
+                <div className="DayText">
+                    {formatDate(message.created.seconds * 1000, "dd/MM/yyyy")}
+                </div>
                 <div className="DayLine" />
             </div>
             : null}
@@ -50,9 +58,13 @@ const FirstUserMessage = ({ message, showDay }) => {
                 />
                 <div className="Author">
                     <div>
-                        <span className="UserName">{author && author.displayName}</span>
+                        <span className="UserName">
+                            {author && author.displayName}
+                        </span>
                         {" "}
-                        <span className="TimeStamp">{formatDate(message.created.seconds * 1000, "H:mm")}</span>
+                        <span className="TimeStamp">
+                            {formatDate(message.created.seconds * 1000, "H:mm")}
+                        </span>
                     </div>
                     <div className="MessageContent">{message.text}</div>
                 </div>
@@ -72,8 +84,8 @@ const shouldShowAvatar = (previousMessage, message) => {
         return true;
     };
 
-    const hasBeenAwhile = message.created.seconds - previousMessage.created.seconds > 60;
-    return hasBeenAwhile;
+    const isHasBeenAwhile = message.created.seconds - previousMessage.created.seconds > 60;
+    return isHasBeenAwhile;
 };
 
 const shouldShowDay = (previousMessage, message) => {
@@ -90,4 +102,18 @@ const shouldShowDay = (previousMessage, message) => {
     return isNewDay;
 };
 
-export default Messages;
+ChannelMessages.defaultProps = {
+    messages: []
+};
+
+ChannelMessages.propTypes = {
+    messages: PropTypes.array,
+    users: PropTypes.array.isRequired
+};
+
+const mapStateToProps = (state, props) => ({
+    messages: state.channelsMessages[props.channelId],
+    users: state.users
+});
+
+export default connect(mapStateToProps)(ChannelMessages);
