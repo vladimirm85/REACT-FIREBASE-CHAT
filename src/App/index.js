@@ -10,20 +10,20 @@ import PropTypes from 'prop-types';
 import Navigation from '../components/Navigation';
 import Channel from '../components/Channel';
 import Login from '../components/Login';
-import { handleGetAuthUser } from '../actions';
+import {
+    handleGetAuthUser,
+    handleGetUsers,
+    handleGetChannels
+} from '../actions';
 
-const App = ({authUser}) => {
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(handleGetAuthUser());
-    }, [dispatch]);
+const App = ({authUser, users, channels}) => {
+    useFetchData()
 
     return (
-        authUser.isLoaded
+        isDataLoaded(authUser, users, channels)
         ?<div className="App">
             <Router>
-                <Navigation authUser={authUser.data} />
+                <Navigation />
                 <Switch>
                     <Route
                         exact
@@ -39,12 +39,35 @@ const App = ({authUser}) => {
     );
 };
 
+const useFetchData = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(handleGetAuthUser());
+        dispatch(handleGetUsers());
+        dispatch(handleGetChannels());
+    }, [dispatch]);
+};
+
+const isDataLoaded = (authUser, users, channels) => 
+    authUser.isLoaded && users.isLoaded && channels.isLoaded;
+
+App.defaultProps = {
+    authUser: {},
+    users: {},
+    channels: {}
+};
+
 App.propTypes = {
-    authUser: PropTypes.object
+    authUser: PropTypes.object,
+    users: PropTypes.object,
+    channels: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-    authUser: state.authUser
+    authUser: state.authUser,
+    users: state.users,
+    channels: state.channels,
 });
 
 export default connect(mapStateToProps)(App);

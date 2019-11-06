@@ -9,9 +9,7 @@ const ChannelMessages = ({messages, users}) => {
     return (
         <ChatScroller className="Messages">
             <div className="EndOfMessages">That's every message!</div>
-            {!messages
-            ? <h1>Loading...</h1>
-            : messages.map((message, index) => {
+            {messages.map((message, index) => {
                 const previousMessage = index ? messages[index-1] : null;
                 const showDay = shouldShowDay(previousMessage, message);
                 const showAvatar = shouldShowAvatar(previousMessage, message);
