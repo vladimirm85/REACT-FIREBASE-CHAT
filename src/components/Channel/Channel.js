@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { dataBase } from '../../firebase';
-import Members from './ChannelMembers';
+import ChannelMembers from './ChannelMembers';
 import ChannelInfo from './ChannelInfo';
 import Messages from './ChannelMessages';
 import ChatInputBox from './ChannelChatInputBox';
@@ -13,7 +13,7 @@ const Channel = ({match, authUser}) => {
     
     useEffect(() => {
         const authUserChannels = Object.keys(authUser.channels);
-        
+
         dispatch(handleGetChannelMessages(authUserChannels));
     }, [dispatch, authUser.channels]);
 
@@ -26,7 +26,7 @@ const Channel = ({match, authUser}) => {
                 <Messages channelId={match.params.id} />
                 <ChatInputBox channelId={match.params.id} />
             </div>
-            <Members />
+            <ChannelMembers channelId={match.params.id} />
         </div>
     );
 };
@@ -46,12 +46,11 @@ const useAddAuthUserChannel = (authUser, channelId) => {
 
 Channel.propTypes = {
     match: PropTypes.object.isRequired,
-    users: PropTypes.array.isRequired,
+    authUser: PropTypes.object.isRequired
 };
 
 
 const mapStateToProps = state => ({
-    users: state.users.data,
     authUser: state.authUser.data
 });
 
