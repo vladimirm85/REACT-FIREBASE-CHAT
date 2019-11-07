@@ -1,6 +1,8 @@
 import {
     GET_AUTH_USER,
-    handleGetAuthUser
+    handleGetAuthUser,
+    AUTH_USER_LOG_OUT,
+    authUserLogOut
 } from './authUserAction';
 import {
     GET_USERS,
@@ -19,6 +21,8 @@ import {
 export {
     GET_AUTH_USER,
     handleGetAuthUser,
+    AUTH_USER_LOG_OUT,
+    authUserLogOut,
     GET_USERS,
     handleGetUsers,
     GET_CHANNELS,

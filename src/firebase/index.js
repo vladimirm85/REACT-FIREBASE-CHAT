@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/database';
 import 'firebase/auth';
 
 const firebaseConfig = {
@@ -15,6 +16,52 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const dataBase = firebase.firestore();
+export const dataBase = firebase.firestore();
+export const realTimeDataBase = firebase.database();
 
-export { dataBase, firebase };
+export const setupUserPresence = user => {
+    const isOfflineForRTDB = {
+        state: 'offline',
+        lastChanget: firebase.database.ServerValue.TIMESTAMP
+    };
+    const isOnlineForRTDB = {
+        state: 'online',
+        lastChanget: firebase.database.ServerValue.TIMESTAMP
+    };
+    const isOfflineForFirestore = {
+        state: 'offline',
+        lastChanget: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    const isOnlineForFirestore = {
+        state: 'online',
+        lastChanget: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    const realTimeDataBaseRef = realTimeDataBase.ref(`status/${user.id}`);
+    const userDoc = dataBase.doc(`users/${user.id}`);
+    /*{
+        "rules": {
+            ".read": "auth != null",
+                ".write": "auth != null"
+        }
+    }*/
+    realTimeDataBase.ref('.info/connected').on('value', snapshot => {
+        if (!snapshot.val()) {
+            userDoc.update({
+                status: isOfflineForFirestore
+            });
+        };
+
+        if (snapshot.val()) {
+            realTimeDataBaseRef.onDisconnect().set(isOfflineForRTDB)
+                .then(response => {
+                    realTimeDataBaseRef.set(isOnlineForRTDB);
+                    userDoc.update({
+                        status: isOnlineForFirestore
+                    });
+                })
+                .catch(error => console.log(error));
+        }
+    });
+};
+
+export { firebase };

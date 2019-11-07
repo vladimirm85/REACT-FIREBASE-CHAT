@@ -223,3 +223,11 @@ body {
   text-align: center;
   margin-top: 55px;
 }
+
+.ChatStartScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}

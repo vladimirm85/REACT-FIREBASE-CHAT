@@ -18,9 +18,11 @@ import {
 
 const App = ({authUser, users, channels}) => {
     useFetchData()
-
+    
     return (
-        isDataLoaded(authUser, users, channels)
+        !(users.isLoaded && channels.isLoaded)
+        ?<div className="ChatStartScreen"><h1>REACT-FIREBASE-CHAT</h1></div>
+        :authUser.isLoaded
         ?<div className="App">
             <Router>
                 <Navigation />
@@ -48,9 +50,6 @@ const useFetchData = () => {
         dispatch(handleGetChannels());
     }, [dispatch]);
 };
-
-const isDataLoaded = (authUser, users, channels) => 
-    authUser.isLoaded && users.isLoaded && channels.isLoaded;
 
 App.defaultProps = {
     authUser: {},

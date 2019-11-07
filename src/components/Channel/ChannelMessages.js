@@ -14,16 +14,15 @@ const ChannelMessages = ({messages, users}) => {
                 const showDay = shouldShowDay(previousMessage, message);
                 const showAvatar = shouldShowAvatar(previousMessage, message);
                 return (
-                    <div key={message.id}>
-                        {showAvatar
+                        showAvatar
                         ?<FirstUserMessage
+                            key={message.id}
                             message={message}
                             showDay={showDay}
                             users={users}/>
                         :<div key={message.id} className="Message no-avatar">
                             <div className="MessageContent">{message.text}</div>
-                        </div>}
-                    </div>
+                        </div>
                 );
             })}
         </ChatScroller>

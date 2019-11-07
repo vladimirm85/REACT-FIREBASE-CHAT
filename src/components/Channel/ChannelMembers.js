@@ -9,8 +9,8 @@ const ChannelMembers = ({users, channelId}) => {
                 {users.map(user => {
                     if(user.channels[channelId]) {
                         return (
-                            <div className="Member">
-                                <div key={`Member ${user.id}`} className="MemberStatus online" />
+                            <div key={`Member ${user.id}`} className="Member">
+                                <div className={`MemberStatus ${user.status.state}`} />
                                 {user.displayName}
                             </div>
                         );

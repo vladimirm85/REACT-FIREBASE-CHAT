@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NavLink } from "react-router-dom"; 
 import { firebase } from '../../firebase';
+import { authUserLogOut } from '../../actions'
 
-const Navigation = ({authUser, channels}) =>
+const Navigation = ({authUser, channels, authUserLogOut}) =>
     <div className="Nav">
         <div className="User">
             <img
@@ -18,6 +19,7 @@ const Navigation = ({authUser, channels}) =>
                     <button
                         className="text-button"
                         onClick={() => {
+                            authUserLogOut();
                             firebase.auth().signOut();
                         }}>
                         log out
@@ -48,4 +50,8 @@ const mapStateToProps = state => ({
     channels: state.channels.data
 });
 
-export default connect(mapStateToProps)(Navigation);
+const mapDispatchToProps = dispatch => ({
+    authUserLogOut: () => dispatch(authUserLogOut())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
